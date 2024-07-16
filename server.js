@@ -4,6 +4,7 @@ const port = process.env.PORT || 3000;
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const userRoutes = require("./app/routes/userRoutes");
+const flowersRoutes = require("./app/routes/flowersRoutes");
 const morgan = require('morgan');
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRoutes);
+app.use("/flowers", flowersRoutes);
 
 app.use(express.static("public"));
 
