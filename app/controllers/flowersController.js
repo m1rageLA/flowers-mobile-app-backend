@@ -37,16 +37,17 @@ exports.buyFlowers = async (req, res) => {
     return res.status(404).send("Flowers not found");
   }
   try {
+    const amountInGrosze = Math.round(flower.price * 100);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
-            currency: "rub",
+            currency: "PLN",
             product_data: {
-              name: "Roses",
+              name: flower.title,
             },
-            unit_amount: 20000,
+            unit_amount: amountInGrosze,
           },
           quantity: 1,
         },
