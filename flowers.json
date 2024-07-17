@@ -4,7 +4,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936691"
         },
-        "uniqueId": "1",
         "title": "Rose Bouquet",
         "description": "A beautiful bouquet of red roses, perfect for any romantic occasion.",
         "price": 29.99,
@@ -15,7 +14,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936692"
         },
-        "uniqueId": "2",
         "title": "Sunflower Delight",
         "description": "Bright and cheerful sunflowers to brighten up anyone's day.",
         "price": 19.99,
@@ -26,7 +24,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936693"
         },
-        "uniqueId": "3",
         "title": "Tulip Garden",
         "description": "A mix of colorful tulips, perfect for spring.",
         "price": 24.99,
@@ -37,7 +34,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936694"
         },
-        "uniqueId": "4",
         "title": "Lily Elegance",
         "description": "Elegant white lilies, symbolizing purity and sophistication.",
         "price": 34.99,
@@ -48,7 +44,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936695"
         },
-        "uniqueId": "5",
         "title": "Orchid Bliss",
         "description": "Exquisite orchids, perfect for a touch of luxury.",
         "price": 39.99,
@@ -59,7 +54,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936696"
         },
-        "uniqueId": "6",
         "title": "Daisy Dream",
         "description": "Simple and charming daisies, ideal for a casual gift.",
         "price": 14.99,
@@ -70,7 +64,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936697"
         },
-        "uniqueId": "7",
         "title": "Peony Passion",
         "description": "Lush peonies in soft pink hues, perfect for a romantic gesture.",
         "price": 29.99,
@@ -81,7 +74,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936698"
         },
-        "uniqueId": "8",
         "title": "Carnation Charm",
         "description": "Charming carnations in a variety of colors, great for any occasion.",
         "price": 19.99,
@@ -92,7 +84,6 @@
         "_id": {
             "$oid": "669660220b526e8e25936699"
         },
-        "uniqueId": "9",
         "title": "Hydrangea Harmony",
         "description": "A harmonious blend of hydrangeas, perfect for a thoughtful gift.",
         "price": 34.99,
@@ -103,7 +94,6 @@
         "_id": {
             "$oid": "669660220b526e8e2593669a"
         },
-        "uniqueId": "10",
         "title": "Lavender Love",
         "description": "Lovely lavender flowers, known for their calming fragrance.",
         "price": 24.99,

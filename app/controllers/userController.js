@@ -6,7 +6,6 @@ const secretKey = process.env.JWT_SECRET;
 
 const User = require("../models/user");
 
-
 exports.register = async (req, res) => {
   const { username, password } = req.body;
 
