@@ -7,17 +7,24 @@ const userRoutes = require("./app/routes/userRoutes");
 const flowersRoutes = require("./app/routes/flowersRoutes");
 const morgan = require("morgan");
 const http = require("http");
+const WebSocket = require('ws'); // Импорт модуля WebSocket
+const Order = require("./app/models/order");
 
 dotenv.config();
 
 //   =========================================
-//   =============  WebSocket  =============
+//   ==============  WebSocket  ==============
 //   =========================================
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const clients = {};
+
+// Подключение к WebSocket серверу
 wss.on("connection", (ws) => {
+  console.log('New client connected');
+
   ws.on("message", async (message) => {
     const data = JSON.parse(message);
 
@@ -25,11 +32,11 @@ wss.on("connection", (ws) => {
     if (data.type === "register") {
       clients[data.id] = ws;
 
-      // Получение всех непрочитанных уведомлений (для женщины)
-      const notifications = await db
-        .collection("orders")
-        .find({ recipientId: data.id, status: "pending" })
-        .toArray();
+      // Получение всех непрочитанных уведомлений
+      const notifications = await Order.find({
+        recipientId: data.id,
+        status: "pending"
+      });
 
       notifications.forEach(order => {
         ws.send(JSON.stringify({
@@ -41,22 +48,25 @@ wss.on("connection", (ws) => {
     }
 
     // Отправка заказа
-    if (data.type === 'sendOrder' && clients[data.recipientId]) {
-      // Отправка уведомления
-      clients[data.recipientId].send(JSON.stringify({
-        type: 'orderReceived',
-        orderId: data.orderId,
-        sessionId: data.sessionId,
-      }));
-    } else if (data.type === 'sendOrder') {
-      // Сохранение заказа в базе данных (если установить соединение с женщиной не удалось)
-      await db.collection('orders').insertOne({
-        orderId: data.orderId,
-        recipientId: data.recipientId,
-        sessionId: data.sessionId,
-        status: 'pending',
-        createdAt: new Date(),
-      });
+    if (data.type === 'sendOrder') {
+      if (clients[data.recipientId]) {
+        // Отправка уведомления
+        clients[data.recipientId].send(JSON.stringify({
+          type: 'orderReceived',
+          orderId: data.orderId,
+          sessionId: data.sessionId,
+        }));
+      } else {
+        // Сохранение заказа в базе данных
+        const newOrder = new Order({
+          orderId: data.orderId,
+          recipientId: data.recipientId,
+          sessionId: data.sessionId,
+          status: 'pending',
+          createdAt: new Date(),
+        });
+        await newOrder.save();
+      }
     }
   });
 
@@ -68,12 +78,12 @@ wss.on("connection", (ws) => {
         break;
       }
     }
+    console.log('Client disconnected');
   });
 });
 
-
 //   =========================================
-//   =============  MONGO DB  =============
+//   ==============  MONGO DB  ==============
 //   =========================================
 
 mongoose
@@ -98,6 +108,7 @@ app.use((req, res, next) => {
   res.status(404).send("Sorry, we cannot find that");
 });
 
-app.listen(port, () => {
+// Запуск HTTP сервера
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
