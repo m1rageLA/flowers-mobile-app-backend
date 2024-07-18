@@ -1,4 +1,5 @@
 const Order = require("../app/models/order");
+const Message = require("../app/models/message");
 
 const clients = {};
 
@@ -64,8 +65,22 @@ module.exports = (wss) => {
               createdAt: new Date(),
             })
           );
+          // Сохранение заказа в базе данных (отпрваленный в realtime)
+          const newOrder = new Order({
+            type: data.type,
+            orderId: data.orderId,
+            recipientId: data.recipientId,
+            sessionId: data.sessionId,
+            flower: data.flower,
+            quantity: data.quantity,
+            amount: data.amount,
+            currency: data.currency,
+            status: "delivered",
+            createdAt: new Date(),
+          });
+          await newOrder.save();
         } else {
-          // Сохранение заказа в базе данных
+          // Сохранение заказа в базе данных (получатель офлайн)
           const newOrder = new Order({
             type: data.type,
             orderId: data.orderId,
@@ -79,6 +94,30 @@ module.exports = (wss) => {
             createdAt: new Date(),
           });
           await newOrder.save();
+        }
+      }
+
+      if (data.type === "sendMessage") {
+        if (clients[data.recipientId]) {
+          clients[data.recipientId].send(
+            JSON.stringify({
+              type: data.type,
+              message: data.message,
+              senderId: data.senderId,
+              recipientId: data.recipientId,
+              status: "delivered",
+              createdAt: new Date(),
+            })
+          );
+          const message = new Message({
+            type: data.type,
+            message: data.message,
+            senderId: data.senderId,
+            recipientId: data.recipientId,
+            status: "delivered",
+            createdAt: new Date(),
+          });
+          await message.save();
         }
       }
     });

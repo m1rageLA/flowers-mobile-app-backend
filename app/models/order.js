@@ -11,7 +11,8 @@ const orderSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   currency: { type: String, required: true },
   status: { type: String, required: true, default: "pending" },
-  recipientId: { type: String, required: true },
+  type: { type: String },
+  recipientId: { type: String, required: true, default: "without recipient" },
   createdAt: { type: Date, default: Date.now },
 });
 
