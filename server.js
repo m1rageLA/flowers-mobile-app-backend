@@ -8,7 +8,7 @@ const flowersRoutes = require("./app/routes/flowersRoutes");
 const morgan = require("morgan");
 const http = require("http");
 const WebSocket = require('ws'); // Импорт модуля WebSocket
-const Order = require("./app/models/order");
+
 
 dotenv.config();
 
@@ -19,68 +19,8 @@ dotenv.config();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const clients = {};
-
-// Подключение к WebSocket серверу
-wss.on("connection", (ws) => {
-  console.log('New client connected');
-
-  ws.on("message", async (message) => {
-    const data = JSON.parse(message);
-
-    // Сохранение клиента по его ID
-    if (data.type === "register") {
-      clients[data.id] = ws;
-
-      // Получение всех непрочитанных уведомлений
-      const notifications = await Order.find({
-        recipientId: data.id,
-        status: "pending"
-      });
-
-      notifications.forEach(order => {
-        ws.send(JSON.stringify({
-          type: 'orderReceived',
-          orderId: order.orderId,
-          sessionId: order.sessionId,
-        }));
-      });
-    }
-
-    // Отправка заказа
-    if (data.type === 'sendOrder') {
-      if (clients[data.recipientId]) {
-        // Отправка уведомления
-        clients[data.recipientId].send(JSON.stringify({
-          type: 'orderReceived',
-          orderId: data.orderId,
-          sessionId: data.sessionId,
-        }));
-      } else {
-        // Сохранение заказа в базе данных
-        const newOrder = new Order({
-          orderId: data.orderId,
-          recipientId: data.recipientId,
-          sessionId: data.sessionId,
-          status: 'pending',
-          createdAt: new Date(),
-        });
-        await newOrder.save();
-      }
-    }
-  });
-
-  ws.on("close", () => {
-    // Удаление клиента при отключении
-    for (const id in clients) {
-      if (clients[id] === ws) {
-        delete clients[id];
-        break;
-      }
-    }
-    console.log('Client disconnected');
-  });
-});
+const websocketHandler = require('./websocket/websocketHandler');
+websocketHandler(wss);
 
 //   =========================================
 //   ==============  MONGO DB  ==============
