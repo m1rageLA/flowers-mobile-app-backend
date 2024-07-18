@@ -1,12 +1,19 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-  flower: {type: mongoose.Schema.Types.ObjectId, ref: "Flower", required: true},
-  quantity: {type: Number, required: true, min: 1},
-  sessionId: {type: String, required: true},
-  amount: {type: Number, required: true},
-  currency: {type: String, required: true},
-  createdAt: {type: Date,default: Date.now},
+  flower: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Flower",
+    required: true,
+  },
+  quantity: { type: Number, required: true, min: 1 },
+  sessionId: { type: String, required: true },
+  amount: { type: Number, required: true },
+  currency: { type: String, required: true },
+  status: { type: String, required: true, default: "pending" },
+  type: { type: String },
+  recipientId: { type: String, required: true, default: "without recipient" },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Order = mongoose.model("Order", orderSchema);

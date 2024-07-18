@@ -84,12 +84,13 @@ exports.success = async (req, res) => {
         sessionId: session_id,
         amount: session.amount_total, 
         currency: session.currency, 
+        status: 'bought'
       });
 
       await order.save();
     }
 
-    res.send("Payment successfully completed. session ID: " + session_id);
+    res.status(201).send("Payment successfully completed. session ID: " + session_id);
   } catch (error) {
     console.error(error);
     res
